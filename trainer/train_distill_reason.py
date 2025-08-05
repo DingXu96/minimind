@@ -123,7 +123,22 @@ def get_lr(current_step, total_steps, lr):
 
 
 def train_epoch(epoch, wandb):
-    # 思考标签占位符
+    """
+    执行一个训练周期（epoch）的操作
+    
+    该函数是模型训练过程中的核心部分，负责在一个epoch内对模型进行训练。
+    它处理特殊标记（如思考开始/结束、答案开始/结束标记），并为这些关键部分设置更高的损失权重，
+    以提高模型在生成结构化输出时的准确性。
+    
+    Args:
+        epoch (int): 当前训练的轮次编号，用于跟踪训练进度和计算学习率
+        wandb: Weights & Biases 实例，用于记录训练过程中的指标（如损失和学习率）
+              在分布式训练中，只有主进程会记录这些指标
+    
+    Returns:
+        None: 无返回值，但会更新模型参数并记录训练过程中的指标
+    """
+    # 定义特殊标记的token ID，用于区分输入文本中的不同语义部分
     start_of_think_ids = tokenizer('<think>').input_ids
     end_of_think_ids = tokenizer('</think>').input_ids
     start_of_answer_ids = tokenizer('<answer>').input_ids
